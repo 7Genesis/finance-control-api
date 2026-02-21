@@ -1,7 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 import { Pool } from "pg";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 export const connection = new Pool({
   connectionString: process.env.DATABASE_URL,
