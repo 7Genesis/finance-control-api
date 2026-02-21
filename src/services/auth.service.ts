@@ -7,8 +7,8 @@ const JWT_SECRET = "supersecret"; // depois colocamos .env
 export const registerService = async (data: any) => {
   const { name, email, password } = data;
 
-  const [existing]: any = await connection.execute(
-    "SELECT id FROM users WHERE email = ?",
+  const [existing]: any = await connection.query(
+    "SELECT id FROM users WHERE email = $1",
     [email]
   );
 
@@ -18,8 +18,8 @@ export const registerService = async (data: any) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const [result]: any = await connection.execute(
-    "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+  const [result]: any = await connection.query(
+    "INSERT INTO users (name, email, password) VALUES ($1, $1, $1)",
     [name, email, hashedPassword]
   );
 
@@ -32,8 +32,8 @@ export const registerService = async (data: any) => {
 export const loginService = async (data: any) => {
   const { email, password } = data;
 
-  const [rows]: any = await connection.execute(
-    "SELECT * FROM users WHERE email = ?",
+  const [rows]: any = await connection.query(
+    "SELECT * FROM users WHERE email = $1",
     [email]
   );
 

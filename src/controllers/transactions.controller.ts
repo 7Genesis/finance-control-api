@@ -1,29 +1,30 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { TransactionDTO } from "../types/transaction.types";
 import {
   createTransactionService,
   getTransactionsService,
   updateTransactionService,
   deleteTransactionService,
-  getMonthlySummaryService, 
-  getSummaryService,
+  getMonthlySummaryService,
   getBalanceService
 } from "../services/transactions.service";
 
 import { AuthRequest } from "../middlewares/auth.middleware";
 
+/* CREATE */
 export const createTransaction = async (
   req: AuthRequest,
   res: Response
 ) => {
   const result = await createTransactionService(
     req.body,
-    req.user!.userId
+    String(req.user!.userId)
   );
 
   return res.status(201).json(result);
 };
 
+/* LIST */
 export const getTransactions = async (
   req: AuthRequest,
   res: Response
@@ -32,16 +33,8 @@ export const getTransactions = async (
   const limit = Number(req.query.limit) || 10;
 
   const result = await getTransactionsService(
-    req.user!.userId,
-    {
-      page,
-      limit,
-      type: req.query.type as string,
-      startDate: req.query.startDate as string,
-      endDate: req.query.endDate as string,
-      sort: req.query.sort as string,
-      order: req.query.order as string,
-    }
+    String(req.user!.userId),
+    { page, limit }
   );
 
   return res.json({
@@ -50,38 +43,16 @@ export const getTransactions = async (
   });
 };
 
+/* UPDATE */
 export const updateTransaction = async (
   req: AuthRequest<{ id: string }, any, TransactionDTO>,
   res: Response
 ) => {
   const result = await updateTransactionService(
     req.params.id,
-    req.body,
-    req.user!.userId
+    String(req.user!.userId),
+    req.body
   );
-
-  return res.json({
-    success: true,
-    data: result
-  });
-};
-
-export const deleteTransaction = async (
-  req: AuthRequest<{ id: string }>,
-  res: Response
-) => {
-  const result = await deleteTransactionService(req.params.id, req.user!.userId);
-
-  return res.json({
-    success: true,
-    data: result
-  });
-};
-
-export const getBalance = async (req: AuthRequest, res: Response) => {
-  const userId = req.user!.userId;
-
-  const result = await getBalanceService(userId);
 
   return res.json({
     success: true,
@@ -89,39 +60,58 @@ export const getBalance = async (req: AuthRequest, res: Response) => {
   });
 };
 
-export const getSummary = async (req: AuthRequest, res: Response) => {
-  const userId = req.user!.userId;
-  const { startDate, endDate } = req.query;
-
-  const summary = await getSummaryService(
-    userId,
-    startDate as string,
-    endDate as string
+/* DELETE */
+export const deleteTransaction = async (
+  req: AuthRequest<{ id: string }>,
+  res: Response
+) => {
+  const result = await deleteTransactionService(
+    req.params.id,
+    String(req.user!.userId)
   );
 
   return res.json({
     success: true,
-    data: summary,
+    data: result,
   });
 };
 
-export const getMonthlySummary = async (req: AuthRequest, res: Response) => {
-    const userId = req.user!.userId;
+/* BALANCE */
+export const getBalance = async (req: AuthRequest, res: Response) => {
+  const result = await getBalanceService(
+    String(req.user!.userId)
+  );
 
-    const result = await getMonthlySummaryService(userId);
-
-      return res.json({
-        success: true,
-        date: result,
-    });
+  return res.json({
+    success: true,
+    data: result,
+  });
 };
 
-export const getDashboard = async (req: AuthRequest, res: Response) => {
-  const userId = req.user!.userId;
+/* MONTHLY */
+export const getMonthlySummary = async (
+  req: AuthRequest,
+  res: Response
+) => {
+  const result = await getMonthlySummaryService(
+    String(req.user!.userId)
+  );
 
-  const [balance, summary, monthly] = await Promise.all([
+  return res.json({
+    success: true,
+    data: result,
+  });
+};
+
+/* DASHBOARD */
+export const getDashboard = async (
+  req: AuthRequest,
+  res: Response
+) => {
+  const userId = String(req.user!.userId);
+
+  const [balance, monthly] = await Promise.all([
     getBalanceService(userId),
-    getSummaryService(userId),
     getMonthlySummaryService(userId),
   ]);
 
@@ -129,7 +119,6 @@ export const getDashboard = async (req: AuthRequest, res: Response) => {
     success: true,
     data: {
       balance,
-      summary,
       monthly,
     },
   });

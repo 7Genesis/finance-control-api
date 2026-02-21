@@ -13,7 +13,6 @@ import {
   updateTransaction,
   deleteTransaction,
   getBalance,
-  getSummary,
   getMonthlySummary,
   getDashboard,
 } from "../controllers/transactions.controller";
@@ -38,9 +37,6 @@ router.get("/", getTransactions);
 
 /* BALANCE */
 router.get("/balance", getBalance);
-
-/* SUMMARY */
-router.get("/summary", getSummary);
 
 /* MONTHLY */
 router.get("/monthly", getMonthlySummary);
