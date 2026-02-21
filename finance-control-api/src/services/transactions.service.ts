@@ -55,8 +55,13 @@ export const getTransactionsService = async (
   const total = Number(countResult.rows[0].count);
   const pages = Math.ceil(total / safeLimit);
 
+  const formattedTransactions = result.rows.map((transaction: any) => ({
+    ...transaction,
+    amount: Number(transaction.amount),
+  }));
+
   return {
-    data: result.rows,
+    data: formattedTransactions,
     meta: {
       page: safePage,
       limit: safeLimit,
@@ -65,7 +70,6 @@ export const getTransactionsService = async (
     },
   };
 };
-
 /* ===================================================
    UPDATE
 =================================================== */
