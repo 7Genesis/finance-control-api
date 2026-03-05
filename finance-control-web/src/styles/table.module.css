@@ -1,0 +1,44 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: #111827; /* fundo base */
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table th {
+  text-align: left;
+  font-weight: 500;
+  padding: 14px 10px;
+  border-bottom: 1px solid #374151;
+  color: #9ca3af;
+}
+
+.table td {
+  padding: 14px 10px;
+  border-bottom: 1px solid #1f2937;
+  color: #e5e7eb; /* 🔥 texto claro */
+}
+
+.table tr {
+  transition: background 0.2s ease;
+}
+
+.table tr:hover {
+  background-color: rgba(255,255,255,0.05);
+}
+
+.table tr:hover td {
+  color: #ffffff; /* 🔥 garante contraste */
+}
+
+.income {
+  color: #22c55e;
+  font-weight: 500;
+}
+
+.expense {
+  color: #ef4444;
+  font-weight: 500;
+}

@@ -5,29 +5,39 @@ import { useRouter } from "next/navigation";
 import { api } from "@/services/api";
 import styles from "@/styles/login.module.css";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleLogin(e: React.FormEvent) {
+  async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      const response = await api.post("/auth/login", {
+      // ✅ ajuste o endpoint conforme teu backend
+      const response = await api.post("/auth/register", {
+        name,
         email,
         password,
       });
 
-      localStorage.setItem("token", response.data.token);
-      router.replace("/dashboard");
-    } catch (error) {
-      setError("E-mail ou senha inválidos");
+      // Se a API já devolver token:
+      if (response.data?.token) {
+        localStorage.setItem("token", response.data.token);
+        router.replace("/dashboard");
+        return;
+      }
+
+      // Se não devolver token, volta pro login
+      router.replace("/login");
+    } catch (err: any) {
+      setError("Não foi possível criar a conta. Verifique os dados.");
     } finally {
       setLoading(false);
     }
@@ -36,12 +46,18 @@ export default function LoginPage() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <h1>Finance Control</h1>
-        <p className={styles.subtitle}>
-          Acesse sua conta
-        </p>
+        <h1>Criar conta</h1>
+        <p className={styles.subtitle}>Crie sua conta para acessar</p>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleRegister}>
+          <input
+            type="text"
+            placeholder="Nome"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+
           <input
             type="email"
             placeholder="E-mail"
@@ -59,24 +75,19 @@ export default function LoginPage() {
           />
 
           {error && (
-            <p style={{ color: "#ef4444", marginBottom: 12 }}>
-              {error}
-            </p>
+            <p style={{ color: "#ef4444", marginBottom: 12 }}>{error}</p>
           )}
 
           <button type="submit" disabled={loading}>
-            {loading ? "Entrando..." : "Entrar"}
+            {loading ? "Criando..." : "Criar conta"}
           </button>
         </form>
 
-        {/* 🔥 BOTÃO CRIAR CONTA */}
         <div style={{ marginTop: 24, textAlign: "center" }}>
-          <span style={{ color: "#9ca3af" }}>
-            Não tem conta?
-          </span>{" "}
+          <span style={{ color: "#9ca3af" }}>Já tem conta?</span>{" "}
           <button
             type="button"
-            onClick={() => router.push("/register")}
+            onClick={() => router.push("/login")}
             style={{
               background: "none",
               border: "none",
@@ -85,7 +96,7 @@ export default function LoginPage() {
               cursor: "pointer",
             }}
           >
-            Criar conta
+            Entrar
           </button>
         </div>
       </div>

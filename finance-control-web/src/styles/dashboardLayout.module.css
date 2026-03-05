@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0f172a;
+}
+
+.content {
+  flex: 1;
+  padding: 40px;
+}
+.container {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f6f9;
+}
+
+.mainArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 30px;
+  background: white;
+  border-bottom: 1px solid #eee;
+}
+
+.content {
+  flex: 1;
+  padding: 40px;
+}
+
+.mainArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  color: #1f2937; /* 🔥 força texto escuro */
+}
+
+.content {
+  flex: 1;
+  padding: 40px;
+  background: #f4f6f9;
+  color: #1f2937; /* 🔥 garante contraste */
+}

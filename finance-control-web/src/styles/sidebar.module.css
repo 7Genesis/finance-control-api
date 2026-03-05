@@ -1,0 +1,42 @@
+.sidebar {
+  width: 220px;
+  background-color: #111827;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav button {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.nav button:hover {
+  background-color: #1f2937;
+  color: white;
+}
+
+.active {
+  background-color: #1f2937;
+  color: white;
+  font-weight: 600;
+}
