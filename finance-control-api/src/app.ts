@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import transactionsRoutes from "./routes/transactions.routes";
 import { errorMiddleware } from "./middlewares/error.middleware";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger";
 
 const app = express();
 
