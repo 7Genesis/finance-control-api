@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { api } from "@/services/api";
 import { MonthlyData } from "@/types/finance";
@@ -5,6 +7,7 @@ import { MonthlyData } from "@/types/finance";
 export function useMonthlyData() {
   const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
   const [loading, setLoading] = useState(true);
+
 
   async function loadMonthlyData() {
     try {
