@@ -1,143 +1,67 @@
-# 💰 Finance Control API
+# Finance Control
 
-API REST para controle financeiro desenvolvida com Node.js, Express, TypeScript e MySQL, com autenticação JWT, dashboard analítico e boas práticas de arquitetura.
+Aplicação web de controle financeiro pessoal: cada usuário tem a própria conta, registra receitas e despesas e acompanha o saldo e o resumo mensal em um dashboard.
 
-REST API for financial control built with Node.js, Express, TypeScript and MySQL, featuring JWT authentication, dashboard analytics and production-ready structure.
+- **Front-end** ([`finance-control-web`](finance-control-web)): Next.js 16, React 19, TypeScript e gráficos com Recharts. Demo: https://finance-control-nine-ashy.vercel.app
+- **API** ([`finance-control-api`](finance-control-api)): Node.js, Express, TypeScript e **PostgreSQL**, com autenticação JWT e validação com Zod.
 
----
+## O que a API faz
 
-## 🚀 Tecnologias | Technologies
+| Método | Rota | O que faz |
+|---|---|---|
+| `POST` | `/auth/register` | cria o usuário (senha com hash bcrypt) |
+| `POST` | `/auth/login` | devolve o token JWT |
+| `POST` | `/transactions` | cria uma receita (`income`) ou despesa (`expense`) |
+| `GET` | `/transactions?page=1&limit=10` | lista as transações do usuário, com paginação |
+| `PUT` | `/transactions/:id` | atualiza uma transação |
+| `DELETE` | `/transactions/:id` | apaga uma transação |
+| `GET` | `/transactions/balance` | receitas, despesas e saldo |
+| `GET` | `/transactions/monthly` | resumo agrupado por mês |
+| `GET` | `/transactions/dashboard` | saldo e resumo mensal numa resposta só |
 
-- Node.js
-- Express
-- TypeScript
-- MySQL
-- JWT (JSON Web Token)
-- Zod (Validação)
-- Dotenv
-- Arquitetura em camadas (Controller → Service)
+As rotas de `/transactions` exigem o header `Authorization: Bearer <token>`, e cada consulta filtra pelo `user_id` do token, então um usuário não enxerga os dados de outro.
 
----
+## Como rodar a API
 
-## 📌 Funcionalidades | Features
-
-### 🔐 Autenticação
-- Registro de usuário
-- Login com geração de token JWT
-- Rotas protegidas por middleware
-
-### 💸 Transações
-- Criar transação (income/expense)
-- Listar com paginação
-- Filtros por tipo e data
-- Ordenação dinâmica
-- Atualizar transação
-- Deletar transação
-
-### 📊 Dashboard
-- Saldo total
-- Resumo por período
-- Resumo mensal agrupado
-- Endpoint consolidado `/dashboard`
-
----
-
-## 🏗 Estrutura do Projeto | Project Structure
-
-src/
-├── controllers/
-├── services/
-├── middlewares/
-├── routes/
-├── schemas/
-├── types/
-├── utils/
-├── database.ts
-└── server.ts
-
----
-
-## ⚙️ Variáveis de Ambiente | Environment Variables
-
-Crie um arquivo `.env` na raiz do projeto:
-
-PORT=3000
-JWT_SECRET=sua_chave_super_secreta
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=sua_senha
-DB_NAME=finance_control
-
----
-
-## ▶️ Como rodar o projeto | Running the Project
+Pré-requisitos: Node.js e um PostgreSQL.
 
 ```bash
-# Instalar dependências
+cd finance-control-api
+cp .env.example .env              # ajuste DATABASE_URL e JWT_SECRET
+psql "$DATABASE_URL" -f schema.sql  # cria as tabelas users e transactions
 npm install
+npm run dev                       # http://localhost:3333
+```
 
-# Rodar em desenvolvimento
-npm run dev
+Exemplo rápido:
 
-Servidor rodando em:
+```bash
+curl -X POST http://localhost:3333/auth/register -H "Content-Type: application/json" \
+  -d '{ "name": "Ana", "email": "ana@exemplo.com", "password": "senha123" }'
+```
 
-http://localhost:3000
+## Como rodar o front-end
 
+```bash
+cd finance-control-web
+npm install
+NEXT_PUBLIC_API_URL=http://localhost:3333 npm run dev   # http://localhost:3000
+```
 
-⸻
+Sem `NEXT_PUBLIC_API_URL`, o front usa a API publicada no Render.
 
-🔒 Segurança
-	•	JWT Secret protegido via variável de ambiente
-	•	Rotas protegidas por middleware de autenticação
-	•	Validação de dados com Zod
-	•	Tratamento centralizado de erros
-	•	Proteção contra acesso a dados de outros usuários
+## Estrutura da API
 
-⸻
+```
+src/controllers/   recebem a requisição e devolvem a resposta
+src/services/      regras e consultas SQL (pg)
+src/middlewares/   autenticação JWT, validação (Zod) e tratamento de erros
+src/schemas/       schemas Zod
+src/routes/        rotas
+```
 
-📈 Endpoints Principais | Main Endpoints
+## O que ainda falta
 
-Auth
-
-POST   /auth/register
-POST   /auth/login
-
-Transactions
-
-POST   /transactions
-GET    /transactions
-PUT    /transactions/:id
-DELETE /transactions/:id
-
-Dashboard
-
-GET /transactions/balance
-GET /transactions/summary
-GET /transactions/monthly
-GET /transactions/dashboard
-
-
-⸻
-
-🎯 Diferenciais Técnicos | Technical Highlights
-	•	Estrutura modular e escalável
-	•	Separação clara de responsabilidades
-	•	Uso correto de status HTTP
-	•	Tratamento de erros customizado
-	•	Proteção por userId em todas operações
-	•	Código preparado para deploy
-
-⸻
-
-📌 Status
-
-🚀 Projeto em evolução contínua.
-
-⸻
-
-👨‍💻 Autor | Author
-
-Genesis Melo
-Backend Developer
-
----
+- Testes automatizados.
+- Migrations versionadas (hoje o esquema está em `schema.sql`).
+- Documentação Swagger: as dependências estão instaladas, mas a rota ainda não foi ligada.

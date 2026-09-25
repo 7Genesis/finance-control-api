@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "https://finance-control-api-8qpp.onrender.com",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "https://finance-control-api-8qpp.onrender.com",
 });
 
 api.interceptors.request.use((config) => {
