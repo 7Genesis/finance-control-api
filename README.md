@@ -40,6 +40,28 @@ curl -X POST http://localhost:3333/auth/register -H "Content-Type: application/j
   -d '{ "name": "Ana", "email": "ana@exemplo.com", "password": "senha123" }'
 ```
 
+## Como rodar os testes (API)
+
+Os testes são de integração: sobem o app Express com o `supertest` e usam um **PostgreSQL de verdade**, então você precisa de um banco de teste. Jest + ts-jest.
+
+```bash
+# 1. um Postgres descartável (ou use o seu e crie o banco finance_test)
+docker run -d --rm --name finance-pg-test -p 5432:5432 \
+  -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=finance_test postgres:16
+
+# 2. rodar a suíte
+cd finance-control-api
+npm install
+TEST_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/finance_test npm test
+```
+
+- Sem `TEST_DATABASE_URL`, usa `postgresql://postgres:postgres@localhost:5432/finance_test`.
+- Antes da suíte, `schema.sql` é aplicado (as tabelas `users` e `transactions` são **apagadas e recriadas**). Por segurança, o nome do banco precisa terminar em `_test`; qualquer outro nome faz a suíte abortar.
+- Cobertura atual: cadastro e login (hash, e-mail duplicado, validação, JWT), proteção das rotas por token, CRUD de transações, paginação, isolamento entre usuários, saldo, resumo mensal e dashboard.
+- O front-end ainda não tem testes.
+
+Integração contínua: o workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) roda `npm ci`, `npm run build` e `npm test` da API (com um serviço PostgreSQL) e o `npm run build` do front a cada push na `main` e a cada pull request. O `npm run lint` do front não está no CI porque hoje ele falha (7 erros já existentes).
+
 ## Como rodar o front-end
 
 ```bash
@@ -62,6 +84,6 @@ src/routes/        rotas
 
 ## O que ainda falta
 
-- Testes automatizados.
+- Testes automatizados do front-end (a API já tem testes de integração).
 - Migrations versionadas (hoje o esquema está em `schema.sql`).
 - Documentação Swagger: as dependências estão instaladas, mas a rota ainda não foi ligada.
