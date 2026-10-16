@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import authRoutes from "./routes/auth.routes";
 import transactionsRoutes from "./routes/transactions.routes";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import swaggerUi from "swagger-ui-express";
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use("/auth", authRoutes);
 app.use("/transactions", transactionsRoutes);
 
 app.use(errorMiddleware);
