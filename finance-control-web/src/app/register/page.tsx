@@ -36,7 +36,7 @@ export default function RegisterPage() {
 
       // Se não devolver token, volta pro login
       router.replace("/login");
-    } catch (err: any) {
+    } catch {
       setError("Não foi possível criar a conta. Verifique os dados.");
     } finally {
       setLoading(false);
