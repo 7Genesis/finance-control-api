@@ -22,6 +22,7 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/auth", authRoutes);
 app.use("/transactions", transactionsRoutes);
 

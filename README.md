@@ -1,9 +1,20 @@
 # Finance Control
 
+[![CI](https://github.com/7Genesis/finance-control-api/actions/workflows/ci.yml/badge.svg)](https://github.com/7Genesis/finance-control-api/actions/workflows/ci.yml)
+[![Licença: MIT](https://img.shields.io/badge/licença-MIT-blue.svg)](LICENSE)
+
 Aplicação web de controle financeiro pessoal: cada usuário tem a própria conta, registra receitas e despesas e acompanha o saldo e o resumo mensal em um dashboard.
 
 - **Front-end** ([`finance-control-web`](finance-control-web)): Next.js 16, React 19, TypeScript e gráficos com Recharts. Demo: https://finance-control-nine-ashy.vercel.app
 - **API** ([`finance-control-api`](finance-control-api)): Node.js, Express, TypeScript e **PostgreSQL**, com autenticação JWT e validação com Zod.
+
+## Capturas de tela
+
+Dados fictícios, em uma instância local.
+
+![Dashboard com entradas, saídas, saldo e o resumo mensal](docs/dashboard.png)
+
+![Documentação Swagger da API](docs/swagger.png)
 
 ## O que a API faz
 
@@ -33,6 +44,8 @@ npm install
 npm run dev                       # http://localhost:3333
 ```
 
+A documentação interativa (Swagger UI) fica em `http://localhost:3333/docs`.
+
 Exemplo rápido:
 
 ```bash
@@ -60,7 +73,7 @@ TEST_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/finance_test npm
 - Cobertura atual: cadastro e login (hash, e-mail duplicado, validação, JWT), proteção das rotas por token, CRUD de transações, paginação, isolamento entre usuários, saldo, resumo mensal e dashboard.
 - O front-end ainda não tem testes.
 
-Integração contínua: o workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) roda `npm ci`, `npm run build` e `npm test` da API (com um serviço PostgreSQL) e o `npm run build` do front a cada push na `main` e a cada pull request. O `npm run lint` do front não está no CI porque hoje ele falha (7 erros já existentes).
+Integração contínua: o workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) roda `npm ci`, `npm run build` e `npm test` da API (com um serviço PostgreSQL) e o `npm run build` do front a cada push na `main` e a cada pull request. O `npm run lint` do front também roda no CI (ele tem avisos, mas nenhum erro).
 
 ## Como rodar o front-end
 
@@ -86,4 +99,3 @@ src/routes/        rotas
 
 - Testes automatizados do front-end (a API já tem testes de integração).
 - Migrations versionadas (hoje o esquema está em `schema.sql`).
-- Documentação Swagger: as dependências estão instaladas, mas a rota ainda não foi ligada.

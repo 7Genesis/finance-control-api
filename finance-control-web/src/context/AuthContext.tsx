@@ -3,8 +3,12 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { api } from "@/services/api";
 
+interface AuthUser {
+  authenticated: boolean;
+}
+
 interface AuthContextType {
-  user: any;
+  user: AuthUser | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }
@@ -12,11 +16,13 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
 
+  // O token só pode ser lido depois da montagem (localStorage não existe no servidor).
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser({ authenticated: true });
     }
   }, []);
