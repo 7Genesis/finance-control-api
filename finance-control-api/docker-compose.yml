@@ -1,20 +1,22 @@
-version: "3"
-
 services:
   api:
     build: .
     ports:
-      - "3000:3000"
+      - "3333:3333"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/finance
+      PORT: 3333
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/finance
+      # Valor fictício, só para desenvolvimento local. Defina JWT_SECRET no ambiente para trocar.
+      JWT_SECRET: ${JWT_SECRET:-dev-only-jwt-secret-change-me}
     depends_on:
       - db
 
   db:
-    image: postgres
+    image: postgres:15
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: finance
-    ports:
-      - "5432:5432"
+    volumes:
+      # cria as tabelas na primeira subida do banco
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
