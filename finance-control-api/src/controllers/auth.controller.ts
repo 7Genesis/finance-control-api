@@ -29,9 +29,18 @@ export const login = async (req: Request, res: Response) => {
     const result = await loginService(req.body);
     return res.json(result);
   } catch (error: any) {
-    return res.status(400).json({
+    logger.error(`Error logging in: ${error.message}`);
+
+    if (error instanceof AppError) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
+    return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Erro interno do servidor",
     });
   }
 };

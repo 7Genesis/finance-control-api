@@ -43,7 +43,7 @@ export const loginService = async (data: any) => {
   );
 
   if (result.rows.length === 0) {
-    throw new Error("Credenciais inválidas");
+    throw new AppError("Credenciais inválidas", 400);
   }
 
   const user = result.rows[0];
@@ -51,7 +51,7 @@ export const loginService = async (data: any) => {
   const isValid = await bcrypt.compare(password, user.password);
 
   if (!isValid) {
-    throw new Error("Credenciais inválidas");
+    throw new AppError("Credenciais inválidas", 400);
   }
 
   const token = jwt.sign(
