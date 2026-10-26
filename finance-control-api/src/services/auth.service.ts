@@ -1,6 +1,7 @@
 import { connection } from "../database";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { AppError } from "../utils/AppError";
 
 if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET não definido no .env");
@@ -17,7 +18,7 @@ export const registerService = async (data: any) => {
   );
 
   if (checkUser.rows.length > 0) {
-    throw new Error("Email já cadastrado");
+    throw new AppError("Email já cadastrado", 400);
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);

@@ -1,17 +1,25 @@
 import { Request, Response } from "express";
 import { registerService, loginService } from "../services/auth.service";
+import { AppError } from "../utils/AppError";
+import logger from "../utils/logger";
 
 export const register = async (req: Request, res: Response) => {
   try {
     const result = await registerService(req.body);
     return res.status(201).json(result);
   } catch (error: any) {
-    console.log("ERRO COMPLETO:", error);
+    logger.error(`Error registering user: ${error.message}`);
 
-    return res.status(400).json({
+    if (error instanceof AppError) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
+    return res.status(500).json({
       success: false,
-      message: error.message || "Erro sem mensagem",
-      raw: error,
+      message: "Erro interno do servidor",
     });
   }
 };

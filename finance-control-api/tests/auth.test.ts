@@ -29,6 +29,7 @@ describe("POST /auth/register", () => {
 
     expect(res.status).toBe(400);
     expect(res.body.message).toBe("Email já cadastrado");
+    expect(res.body).not.toHaveProperty("raw");
 
     const { rows } = await connection.query("SELECT id FROM users");
     expect(rows).toHaveLength(1);

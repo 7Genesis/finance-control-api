@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import logger from "../utils/logger";
 
 interface CustomError extends Error {
   statusCode?: number;
@@ -10,7 +11,7 @@ export const errorMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error("🔥 ERROR:", error);
+  logger.error(`Unhandled error: ${error.message}`);
 
   const statusCode = error.statusCode || 500;
 
